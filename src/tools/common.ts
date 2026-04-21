@@ -23,7 +23,7 @@ const close = defineTool({
   schema: {
     name: 'browser_close',
     title: 'Close browser',
-    description: 'Close the page',
+    description: 'Close the browser session, releasing any remote Browser Rendering sessions so they do not idle on until their keep-alive expires.',
     inputSchema: z.object({}),
     type: 'readOnly',
   },
@@ -31,7 +31,7 @@ const close = defineTool({
   handle: async context => {
     await context.close();
     return {
-      code: [`await page.close()`],
+      code: [`await browser.close()`],
       captureSnapshot: false,
       waitForNetwork: false,
     };

@@ -335,7 +335,7 @@ X Y coordinate space, based on the provided screenshot.
 
 - **browser_close**
   - Title: Close browser
-  - Description: Close the page
+  - Description: Close the browser session, releasing any remote Browser Rendering sessions so they do not idle on until their keep-alive expires.
   - Parameters: None
   - Read-only: **true**
 
