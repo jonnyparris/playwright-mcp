@@ -82,7 +82,7 @@ test('should throw connection error and allow re-connecting', async ({ cdpServer
 // NOTE: Can be removed when we drop Node.js 18 support and changed to import.meta.filename.
 const __filename = url.fileURLToPath(import.meta.url);
 
-test('browser_close terminates the remote CDP browser (not just disconnect)', async ({ cdpServer, startClient, server }) => {
+test('browser_terminate terminates the remote CDP browser (not just disconnect)', async ({ cdpServer, startClient, server }) => {
   const browserContext = await cdpServer.start();
   const browser = browserContext.browser();
   expect(browser).toBeTruthy();
@@ -98,13 +98,13 @@ test('browser_close terminates the remote CDP browser (not just disconnect)', as
     arguments: { url: server.HELLO_WORLD },
   });
 
-  // Call browser_close — this should send CDP `Browser.close` and terminate
-  // the remote browser, not just drop the MCP-side connection.
-  await client.callTool({ name: 'browser_close' });
+  // Call browser_terminate — this should send CDP `Browser.close` and
+  // terminate the remote browser, not just drop the MCP-side connection.
+  await client.callTool({ name: 'browser_terminate' });
 
-  // If browser_close works correctly for CDP-connected sessions, the remote
-  // Chrome instance should be gone. The test's own observer of that instance
-  // should see the `disconnected` event fire.
+  // If browser_terminate works correctly for CDP-connected sessions, the
+  // remote Chrome instance should be gone. The test's own observer of that
+  // instance should see the `disconnected` event fire.
   await expect(Promise.race([
     disconnected.then(() => 'disconnected'),
     new Promise<string>(resolve => setTimeout(() => resolve('timeout'), 5000)),

@@ -23,13 +23,40 @@ const close = defineTool({
   schema: {
     name: 'browser_close',
     title: 'Close browser',
-    description: 'Close the browser session, releasing any remote Browser Rendering sessions so they do not idle on until their keep-alive expires.',
+    description: 'Close the page',
     inputSchema: z.object({}),
     type: 'readOnly',
   },
 
   handle: async context => {
     await context.close();
+    return {
+      code: [`await page.close()`],
+      captureSnapshot: false,
+      waitForNetwork: false,
+    };
+  },
+});
+
+// Destructive equivalent of `browser_close`: when the MCP is connected to a
+// remote browser over CDP (e.g. Cloudflare Browser Rendering), Playwright's
+// `browser.close()` only drops the local WebSocket — the remote Chromium
+// keeps running until its keep-alive timeout expires. `browser_terminate`
+// sends the CDP `Browser.close` command so the remote session is released
+// immediately. For non-CDP transports it behaves the same as `browser_close`.
+const terminate = defineTool({
+  capability: 'core',
+
+  schema: {
+    name: 'browser_terminate',
+    title: 'Terminate browser session',
+    description: 'Close the browser and release any remote CDP-backed session so it does not idle on until its keep-alive expires. Use this instead of browser_close when you are connected to a remote browser (e.g. Cloudflare Browser Rendering) and want to free the session immediately.',
+    inputSchema: z.object({}),
+    type: 'readOnly',
+  },
+
+  handle: async context => {
+    await context.terminate();
     return {
       code: [`await browser.close()`],
       captureSnapshot: false,
@@ -74,5 +101,6 @@ const resize: ToolFactory = captureSnapshot => defineTool({
 
 export default (captureSnapshot: boolean) => [
   close,
+  terminate,
   resize(captureSnapshot)
 ];

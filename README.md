@@ -335,7 +335,15 @@ X Y coordinate space, based on the provided screenshot.
 
 - **browser_close**
   - Title: Close browser
-  - Description: Close the browser session, releasing any remote Browser Rendering sessions so they do not idle on until their keep-alive expires.
+  - Description: Close the page
+  - Parameters: None
+  - Read-only: **true**
+
+<!-- NOTE: This has been generated via update-readme.js -->
+
+- **browser_terminate**
+  - Title: Terminate browser session
+  - Description: Close the browser and release any remote CDP-backed session so it does not idle on until its keep-alive expires. Use this instead of browser_close when you are connected to a remote browser (e.g. Cloudflare Browser Rendering) and want to free the session immediately.
   - Parameters: None
   - Read-only: **true**
 
